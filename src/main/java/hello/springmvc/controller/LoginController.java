@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @Slf4j
@@ -27,7 +28,7 @@ public class LoginController {
     }
     @PostMapping("/login")
     public String login(@Valid @ModelAttribute LoginForm form, BindingResult
-            bindingResult, HttpServletResponse response) {
+            bindingResult, HttpServletResponse response, HttpServletRequest request) {
         if (bindingResult.hasErrors()) {
             return "login/loginForm";
         }
@@ -46,8 +47,12 @@ public class LoginController {
 
 
         //세션 관리자를 통해 세션을 생성하고, 회원 데이터 보관
-        sessionManager.createSession(loginMember, response);
+//        sessionManager.createSession(loginMember, response);
 
+        //세션이 있으면 있는 세션 반환, 없으면 신규 세션 생성
+        HttpSession session = request.getSession();
+        //세션에 로그인 회원 정보 보관
+        session.setAttribute("loginMember", loginMember);
         return "redirect:/";
     }
 
@@ -64,7 +69,13 @@ public class LoginController {
 
     @PostMapping("/logout")
     public String logoutV2(HttpServletRequest request) {
-        sessionManager.expire(request);
+        //sessionManager.expire(request);
+
+        //세션을 삭제한다.
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
         return "redirect:/";
     }
 }
