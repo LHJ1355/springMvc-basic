@@ -1,5 +1,6 @@
 package hello.springmvc.config;
 
+import hello.springmvc.argumentresolver.LoginArgumentResolver;
 import hello.springmvc.filter.LogFilter;
 import hello.springmvc.filter.LoginCheckFilter;
 import hello.springmvc.interceptor.LogInterceptor;
@@ -7,10 +8,12 @@ import hello.springmvc.interceptor.LoginCheckInterceptor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.servlet.Filter;
+import java.util.List;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
@@ -27,6 +30,11 @@ public class WebConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/", "/members/add", "/login", "/logout",
                         "/css/**", "/*.ico", "/error")
                 .order(2);
+    }
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(new LoginArgumentResolver());
     }
 
     @Bean

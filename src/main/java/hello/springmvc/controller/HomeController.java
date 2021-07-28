@@ -1,5 +1,6 @@
 package hello.springmvc.controller;
 
+import hello.springmvc.argumentresolver.Login;
 import hello.springmvc.domain.Member;
 import hello.springmvc.repository.MemberRepository;
 import hello.springmvc.session.SessionManager;
@@ -68,8 +69,20 @@ public class HomeController {
         return "loginHome";
     }
 
-    @GetMapping("/")
+//    @GetMapping("/")
     public String homeLoginV3Spring(@SessionAttribute(name = "loginMember", required = false) Member loginMember, Model model) {
+
+        //세션에 회원 데이터가 없으면 home
+        if (loginMember == null) {
+            return "home";
+        }
+        //세션이 유지되면 로그인으로 이동
+        model.addAttribute("member", loginMember);
+        return "loginHome";
+    }
+
+    @GetMapping("/")
+    public String homeLoginV4Spring(@Login Member loginMember, Model model) {
 
         //세션에 회원 데이터가 없으면 home
         if (loginMember == null) {
