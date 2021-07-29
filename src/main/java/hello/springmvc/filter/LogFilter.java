@@ -15,16 +15,17 @@ public class LogFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         String requestURI = httpRequest.getRequestURI();
+        DispatcherType dispatcherType = request.getDispatcherType();
 
         UUID uuid = UUID.randomUUID();
 
         try {
-            log.info("Request [{}][{}]", uuid, requestURI);
+            log.info("Request [{}][{}][{}]", uuid, requestURI, dispatcherType);
             chain.doFilter(request, response);
         } catch (Exception e) {
             throw e;
         } finally {
-            log.info("Response [{}][{}]", uuid, requestURI);
+            log.info("Response [{}][{}][{}]", uuid, requestURI, dispatcherType);
         }
     }
 }
