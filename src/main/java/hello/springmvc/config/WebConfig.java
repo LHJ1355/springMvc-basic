@@ -23,8 +23,10 @@ public class WebConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LogInterceptor())
                 .addPathPatterns("/**")
-                .excludePathPatterns("/css/**", "/*.ico", "/error")
-                .order(1);
+                .order(1)
+                .excludePathPatterns("/css/**", "/*.ico", "/error", "/error-page/**");
+                //인터셉터의 경우 오류페이지로의 경로를 excludePathPatterns에 추가하여 exception에 의해 다시 호출되는경우
+                //인터셉터의 중복호출을 막을 수 있다.
 
         registry.addInterceptor(new LoginCheckInterceptor())
                 .addPathPatterns("/**")
@@ -44,6 +46,9 @@ public class WebConfig implements WebMvcConfigurer {
         filterRegistrationBean.setFilter(new LogFilter());
         filterRegistrationBean.setOrder(1);
         filterRegistrationBean.addUrlPatterns("/*");
+        //default only DispatcherType.REQUEST
+        //exception에 의해 다시 호출되는 경우, DispatcherType = ERROR이므로 setDispatcherTypes(DispatcherType.REQUEST)로 설정시
+        //필터를 중복해서 검사하지 않을 수 있다.
         filterRegistrationBean.setDispatcherTypes(DispatcherType.REQUEST, DispatcherType.ERROR);
         return filterRegistrationBean;
     }

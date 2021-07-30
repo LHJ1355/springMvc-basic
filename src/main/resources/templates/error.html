@@ -1,0 +1,23 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+</head>
+<body>
+<div class="container" style="max-width: 600px">
+    <div class="py-5 text-center">
+        <h2>오류 화면 입니다.</h2>
+    </div>
+    <hr class="my-4">
+</div> <!-- /container -->
+</body>
+</html>
+
+<!--스프링 부트는 errorPage(경로 = /error)를 자동으로 등록한다.-->
+<!--/error경로는 BasicErrorController에 requestMapping 되어 있다.-->
+<!--BasicErrorController는 에러코드에 맞는 view템플릿을 render한다.-->
+<!--뷰 선택 우선 순위-->
+<!--1.뷰 템플릿 - resources/templates/error/...-->
+<!--2. 정적 리소스( static , public ) - resources/static/error/...-->
+<!--3. 적용 대상이 없을 때 뷰 이름( error ) - resources/templates/error.html-->
+<!--BasicErrorController는 다양한 에러 정보를 model에 넘겨준다.(timestamp, status, error, exception,trace, message, errors, path-->
