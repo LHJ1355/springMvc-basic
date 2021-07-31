@@ -1,11 +1,16 @@
 package hello.springmvc.exception;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @Controller
@@ -30,6 +35,19 @@ public class ErrorPageController {
         log.info("errorPage 500");
         printErrorInfo(request);
         return "error-page/500";
+    }
+//    internal server error의 경우 요청의 accept값에 따라 다른 리턴값을 주기 위해 별도의 컨트롤러에서 처리
+//    스프링 부트가 제공하는 basic error controller 도 비슷하게 구현되어 있음
+    @RequestMapping(value = "/error-page/500", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String, Object> > errorPage500Json(HttpServletRequest request, HttpServletResponse response) {
+        Map<String, Object> result = new HashMap<>();
+        Exception exception = (Exception) request.getAttribute(ERROR_EXCEPTION);
+        Integer statusCode = (Integer) request.getAttribute(ERROR_STATUS_CODE);
+
+        result.put("exception", exception);
+        result.put("status", statusCode);
+
+        return new ResponseEntity<>(result, HttpStatus.valueOf(statusCode));
     }
 
     private void printErrorInfo(HttpServletRequest request) {
